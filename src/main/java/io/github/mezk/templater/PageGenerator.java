@@ -14,7 +14,7 @@ import freemarker.template.TemplateException;
  * @author Andrei Selkin
  */
 public class PageGenerator {
-    private static final String HTML_DIR = "templates";
+    private static final String HTML_DIR = "server_tml";
     private static final Configuration CFG = new Configuration();
 
     public static String getPage(String filename, Map<String, Object> data) {
@@ -22,7 +22,8 @@ public class PageGenerator {
         try {
             Template template = CFG.getTemplate(HTML_DIR + File.separator + filename);
             template.process(data, stream);
-        } catch (IOException | TemplateException e) {
+        }
+        catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
         return stream.toString();
