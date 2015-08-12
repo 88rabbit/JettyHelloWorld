@@ -15,6 +15,8 @@ import io.github.mezk.templater.PageGenerator;
 
 public class SignUpServlet extends HttpServlet {
 
+    public final static String SIGNUP_PAGE_URL = "/signup";
+
     private AccountService accountService;
 
     public SignUpServlet(AccountService accountService) {
@@ -23,7 +25,7 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println(PageGenerator.getPage("signup.html", null));
+        resp.getWriter().println(PageGenerator.getPage(SIGNUP_PAGE_URL+".html", null));
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -38,11 +40,11 @@ public class SignUpServlet extends HttpServlet {
         if (accountService.addUser(name, new UserProfile(name, password, email))) {
             pageVariables.put("signUpStatus", "New user created");
             resp.getWriter().println(PageGenerator.getPage("signupstatus.html", pageVariables));
-            resp.setStatus(HttpServletResponse.SC_OK);
         }
         else {
             pageVariables.put("signUpStatus", "User with name: " + name + " already exists");
             resp.getWriter().println(PageGenerator.getPage("signupstatus.html", pageVariables));
         }
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }

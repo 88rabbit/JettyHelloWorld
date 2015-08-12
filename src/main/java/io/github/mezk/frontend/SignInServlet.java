@@ -15,6 +15,8 @@ import io.github.mezk.templater.PageGenerator;
 
 public class SignInServlet extends HttpServlet {
 
+    public final static String SIGNIN_PAGE_URL = "/signin";
+
     private AccountService accountService;
 
     public SignInServlet(AccountService accountService) {
@@ -25,7 +27,7 @@ public class SignInServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
 
-        resp.getWriter().println(PageGenerator.getPage("signin.html", null));
+        resp.getWriter().println(PageGenerator.getPage(SIGNIN_PAGE_URL + ".html", null));
         resp.setStatus(HttpServletResponse.SC_OK);
 
     }
@@ -48,7 +50,8 @@ public class SignInServlet extends HttpServlet {
                 pageVariables.put("password", password);
                 Thread.sleep(100);
                 resp.getWriter().println(PageGenerator.getPage("authresponse.txt", pageVariables));
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

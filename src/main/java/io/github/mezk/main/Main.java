@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import io.github.mezk.frontend.AdminServlet;
 import io.github.mezk.frontend.SignInServlet;
 import io.github.mezk.frontend.SignUpServlet;
 
@@ -23,23 +24,25 @@ public class Main {
             port = Integer.valueOf(portString);
         }
 
-        System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
+        System.out.append("Starting Jetty at port: ").append(String.valueOf(port)).append('\n');
 
         AccountService accountService = new AccountService();
 
         Servlet signin = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
+        Servlet admin = new AdminServlet();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(signin), "/signin");
-        context.addServlet(new ServletHolder(signUp), "/signup");
+        context.addServlet(new ServletHolder(signin), SignInServlet.SIGNIN_PAGE_URL);
+        context.addServlet(new ServletHolder(signUp), SignUpServlet.SIGNUP_PAGE_URL);
+        context.addServlet(new ServletHolder(admin), AdminServlet.ADMIN_PAGE_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("public_html");
+        resource_handler.setResourceBase("static");
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, context});
+        handlers.setHandlers(new Handler[]{ resource_handler, context });
 
         Server server = new Server(port);
         server.setHandler(handlers);
