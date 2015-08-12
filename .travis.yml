@@ -1,0 +1,16 @@
+language: java
+sudo: false
+
+install:
+  -
+
+matrix:
+  fast_finish: true
+  include:
+    # test travis config
+    - jdk: oraclejdk7
+      env: DESC="test_travis" CMD="mvn clean compile"
+
+branches:
+  only:
+    - master
