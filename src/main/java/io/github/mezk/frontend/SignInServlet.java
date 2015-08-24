@@ -13,12 +13,24 @@ import io.github.mezk.main.AccountService;
 import io.github.mezk.main.UserProfile;
 import io.github.mezk.templater.PageGenerator;
 
+/**
+ * Sign in servlet.
+ * @author <a href="mailto:andreyselkin@gmail.com">Andrei Selkin</a>
+ */
 public class SignInServlet extends HttpServlet {
 
-    public final static String SIGNIN_PAGE_URL = "/signin";
+    /**Sign in page URL.*/
+    public static final String SIGNIN_PAGE_URL = "/signin";
+    /**Time to auithorization responce.*/
+    public static final int TIME_TO_AUTH_RESPONSE = 100;
 
+    /**Account service.*/
     private AccountService accountService;
 
+    /**
+     * Class constructor.
+     * @param accountService account service.
+     */
     public SignInServlet(AccountService accountService) {
         this.accountService = accountService;
     }
@@ -36,19 +48,19 @@ public class SignInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
 
-        String name = req.getParameter("name");
-        String password = req.getParameter("password");
+        final String name = req.getParameter("name");
+        final String password = req.getParameter("password");
 
-        Map<String, Object> pageVariables = new HashMap<>();
-        UserProfile profile = accountService.getUser(name);
+        final Map<String, Object> pageVariables = new HashMap<>();
+        final UserProfile profile = accountService.getUser(name);
         if (profile != null && profile.getPassword().equals(password)) {
             pageVariables.put("loginStatus", "Login passed");
             resp.getWriter().println(PageGenerator.getPage("authstatus.html", pageVariables));
             try {
-                String email = profile.getEmail();
+                final String email = profile.getEmail();
                 pageVariables.put("email", email);
                 pageVariables.put("password", password);
-                Thread.sleep(100);
+                Thread.sleep(TIME_TO_AUTH_RESPONSE);
                 resp.getWriter().println(PageGenerator.getPage("authresponse.txt", pageVariables));
             }
             catch (InterruptedException e) {

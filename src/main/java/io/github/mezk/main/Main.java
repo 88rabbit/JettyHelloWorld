@@ -14,37 +14,51 @@ import io.github.mezk.frontend.SignInServlet;
 import io.github.mezk.frontend.SignUpServlet;
 
 /**
- * @author Andrei Selkin
+ * Main class.
+ * @author <a href="mailto:andreyselkin@gmail.com">Andrei Selkin</a>
  */
-public class Main {
-    public static void main(String[] args) throws Exception {
-        int port = 8080;
+public final class Main {
+
+    /**Server default port.*/
+    public static final int DEFAULT_PORT = 8080;
+
+    /**Default constructor.*/
+    private Main() { }
+
+    /**
+     * Main method.
+     * @param args command line arguments.
+     * @throws Exception if an exception occures during starting or joining the server.
+     */
+    public static void main(String... args) throws Exception {
+        int port = DEFAULT_PORT;
         if (args.length == 1) {
-            String portString = args[0];
+            final String portString = args[0];
             port = Integer.valueOf(portString);
         }
 
         System.out.append("Starting Jetty at port: ").append(String.valueOf(port)).append('\n');
 
-        AccountService accountService = new AccountService();
+        final AccountService accountService = new AccountService();
 
-        Servlet signin = new SignInServlet(accountService);
-        Servlet signUp = new SignUpServlet(accountService);
-        Servlet admin = new AdminServlet();
+        final Servlet signIn = new SignInServlet(accountService);
+        final Servlet signUp = new SignUpServlet(accountService);
+        final Servlet admin = new AdminServlet();
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(signin), SignInServlet.SIGNIN_PAGE_URL);
+        final ServletContextHandler context =
+            new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(new ServletHolder(signIn), SignInServlet.SIGNIN_PAGE_URL);
         context.addServlet(new ServletHolder(signUp), SignUpServlet.SIGNUP_PAGE_URL);
         context.addServlet(new ServletHolder(admin), AdminServlet.ADMIN_PAGE_URL);
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("static");
+        final ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        resourceHandler.setResourceBase("static");
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{ resource_handler, context });
+        final HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resourceHandler, context});
 
-        Server server = new Server(port);
+        final Server server = new Server(port);
         server.setHandler(handlers);
 
         server.start();

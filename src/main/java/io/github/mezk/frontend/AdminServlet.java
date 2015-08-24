@@ -10,22 +10,29 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.github.mezk.templater.PageGenerator;
 
+/**
+ * Processes requests to the admin page and generates responses.
+ * @author <a href="mailto:andreyselkin@gmail.com">Andrei Selkin</a>
+ */
 public class AdminServlet extends HttpServlet {
 
-    public final static String ADMIN_PAGE_URL = "/admin";
+    /**Admin page URL.*/
+    public static final String ADMIN_PAGE_URL = "/admin";
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println(PageGenerator.getPage(ADMIN_PAGE_URL + ".html", null));
-        resp.setStatus(HttpServletResponse.SC_OK);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        response.getWriter().println(PageGenerator.getPage(ADMIN_PAGE_URL + ".html", null));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        String timeString = req.getParameter("timeToShutdown");
-        if(timeString != null && !timeString.isEmpty()) {
-            int timeToShutdown = Integer.valueOf(timeString);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        final String timeString = request.getParameter("timeToShutdown");
+        if (timeString != null && !timeString.isEmpty()) {
+            final int timeToShutdown = Integer.valueOf(timeString);
             try {
                 System.out.println("Server will be down after " + timeToShutdown + " seconds!");
                 TimeUnit.SECONDS.sleep(timeToShutdown);
